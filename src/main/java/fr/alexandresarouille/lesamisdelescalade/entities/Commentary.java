@@ -1,7 +1,6 @@
 package fr.alexandresarouille.lesamisdelescalade.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Classe java du projet: Les-amis-de-lescalade
@@ -14,6 +13,18 @@ import javax.persistence.Id;
  **/
 @Entity(name = "commentary")
 public class Commentary {
+
+    public Commentary() {}
+
+    public Commentary(User user,
+                      String content,
+                      ClimbingSite climbingSite) {
+
+        this.user = user;
+        this.content = content;
+        this.climbingSite = climbingSite;
+
+    }
 
     /**
      * Id de l'entitée
@@ -33,5 +44,42 @@ public class Commentary {
     @Id
     public Integer getId() {
         return id;
+    }
+
+
+
+    // VARIABLES
+    @ManyToOne
+    private User user; // UTILISATEUR A L ORGINE DU COMMENTAIRE
+
+    private String content; // CONTENUE DU COMMENTAIRE
+
+    @ManyToOne
+    private ClimbingSite climbingSite; // SITE D ESCALADE
+
+    //GETTERS & SETTERS
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public ClimbingSite getClimbingSite() {
+        return climbingSite;
+    }
+
+    public void setClimbingSite(ClimbingSite climbingSite) {
+        this.climbingSite = climbingSite;
     }
 }
