@@ -1,11 +1,8 @@
 package fr.alexandresarouille.lesamisdelescalade.entities;
 
 import fr.alexandresarouille.lesamisdelescalade.entities.enums.Region;
-import org.hibernate.annotations.ManyToAny;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -27,7 +24,7 @@ public class Topo {
                 String description,
                 Region region,
                 Date releaseDate,
-                boolean available) {
+                Boolean available) {
 
         this.user = user;
         this.displayName = displayName;
@@ -41,6 +38,7 @@ public class Topo {
     /**
      * Id de l'entitée
      */
+    @Id @GeneratedValue
     private Integer id;
 
     /**
@@ -53,7 +51,6 @@ public class Topo {
     /**
      * Getter d'id de l'entitée
      */
-    @Id
     public Integer getId() {
         return id;
     }
@@ -69,7 +66,7 @@ public class Topo {
 
     private Date releaseDate; // DATE DE MISE EN LIGNE DU TOPO
 
-    private boolean available; // DISPONIBILITE DU TOPO
+    private Boolean available; // DISPONIBILITE DU TOPO
 
 
     //GETTERS & SETTERS
@@ -114,11 +111,11 @@ public class Topo {
         this.releaseDate = releaseDate;
     }
 
-    public boolean isAvailable() {
+    public Boolean getAvailable() {
         return available;
     }
 
-    public void setAvailable(boolean available) {
+    public void setAvailable(Boolean available) {
         this.available = available;
     }
 }

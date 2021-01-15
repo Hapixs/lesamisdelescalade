@@ -3,7 +3,11 @@ package fr.alexandresarouille.lesamisdelescalade.entities;
 import fr.alexandresarouille.lesamisdelescalade.entities.enums.Role;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Classe java du projet: Les-amis-de-lescalade
@@ -34,6 +38,7 @@ public class User {
     /**
      * Id de l'entitée
      */
+    @Id @GeneratedValue
     private Integer id;
 
     /**
@@ -46,7 +51,6 @@ public class User {
     /**
      * Getter d'id de l'entitée
      */
-    @Id
     public Integer getId() {
         return id;
     }

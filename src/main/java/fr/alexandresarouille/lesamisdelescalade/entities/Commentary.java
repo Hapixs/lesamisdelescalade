@@ -29,6 +29,7 @@ public class Commentary {
     /**
      * Id de l'entitée
      */
+    @Id @GeneratedValue
     private Integer id;
 
     /**
@@ -41,7 +42,6 @@ public class Commentary {
     /**
      * Getter d'id de l'entitée
      */
-    @Id
     public Integer getId() {
         return id;
     }

@@ -4,6 +4,7 @@ import fr.alexandresarouille.lesamisdelescalade.entities.enums.Difficulty;
 import fr.alexandresarouille.lesamisdelescalade.entities.enums.Region;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
@@ -43,6 +44,7 @@ public class ClimbingSite {
     /**
      * Id de l'entitée
      */
+    @Id @GeneratedValue
     private Integer id;
 
     /**
@@ -55,7 +57,6 @@ public class ClimbingSite {
     /**
      * Getter d'id de l'entitée
      */
-    @Id
     public Integer getId() {
         return id;
     }

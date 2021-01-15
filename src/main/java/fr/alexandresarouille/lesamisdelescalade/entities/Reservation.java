@@ -1,8 +1,6 @@
 package fr.alexandresarouille.lesamisdelescalade.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 /**
  * Classe java du projet: Les-amis-de-lescalade
@@ -29,6 +27,7 @@ public class Reservation {
     /**
      * Id de l'entitée
      */
+    @Id @GeneratedValue
     private Integer id;
 
     /**
@@ -41,7 +40,6 @@ public class Reservation {
     /**
      * Getter d'id de l'entitée
      */
-    @Id
     public Integer getId() {
         return id;
     }
@@ -51,10 +49,10 @@ public class Reservation {
 
 
     // VARIABLES
-    @OneToOne
+    @OneToOne @JoinColumn(name = "user_id")
     private User user; // UTILISATEUR A L ORIGINE DE LA RESERVATION
 
-    @OneToOne
+    @OneToOne @JoinColumn(name = "topo_id")
     private Topo topo; // TOPO A RESERVER
 
     //GETTERS & SETTERS
