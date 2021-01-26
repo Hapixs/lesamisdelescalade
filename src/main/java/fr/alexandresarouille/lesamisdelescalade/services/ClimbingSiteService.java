@@ -4,6 +4,8 @@ import fr.alexandresarouille.lesamisdelescalade.dao.ClimbingSiteRepository;
 import fr.alexandresarouille.lesamisdelescalade.entities.ClimbingSite;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +44,7 @@ public class ClimbingSiteService implements IClimbingSiteService {
     @Override
     public ClimbingSite createClimbingSite(ClimbingSite site) {
 
-        site = climbingSiteRepository.saveAndFlush(site);
+        site = climbingSiteRepository.save(site);
 
         return site;
     }
@@ -75,5 +77,18 @@ public class ClimbingSiteService implements IClimbingSiteService {
         ClimbingSite target = findByIdIfExist(id);
 
         climbingSiteRepository.delete(target);
+    }
+
+    @Override
+    public Page<ClimbingSite> listAll(PageRequest pageRequest) {
+        return climbingSiteRepository.findAll(pageRequest);
+    }
+
+    @Override
+    public Page<ClimbingSite> listAllByFilter(PageRequest pageRequest, ClimbingSite climbingSiteFilter) {
+        return climbingSiteRepository.findAllFromFilter(pageRequest,
+                climbingSiteFilter.getRegion(),
+                climbingSiteFilter.getDifficulty(),
+                climbingSiteFilter.getSectorAmount());
     }
 }

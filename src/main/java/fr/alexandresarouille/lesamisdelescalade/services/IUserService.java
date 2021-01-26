@@ -1,6 +1,7 @@
 package fr.alexandresarouille.lesamisdelescalade.services;
 
 import fr.alexandresarouille.lesamisdelescalade.entities.User;
+import fr.alexandresarouille.lesamisdelescalade.exception.EntityAlreadyExistException;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistException;
 
 import java.util.Optional;
@@ -24,4 +25,6 @@ public interface IUserService {
     public User editUser(User user, Integer id) throws EntityNotExistException;
 
     public void deleteUser(Integer id) throws EntityNotExistException;
+
+    public void createUserAccount(User user) throws EntityAlreadyExistException;
 }

@@ -3,6 +3,8 @@ package fr.alexandresarouille.lesamisdelescalade.services;
 
 import fr.alexandresarouille.lesamisdelescalade.entities.ClimbingSite;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Optional;
 
@@ -25,4 +27,8 @@ public interface IClimbingSiteService {
     public ClimbingSite editClimbingSite(ClimbingSite site, Integer id) throws EntityNotExistException;
 
     public void deleteClimbingSite(Integer id) throws EntityNotExistException;
+
+    public Page<ClimbingSite> listAll(PageRequest pageRequest);
+
+    public Page<ClimbingSite> listAllByFilter(PageRequest pageRequest, ClimbingSite climbingSiteFilter);
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:form="http://www.springframework.org/tags/form"  >
+
+<head>
+    <meta charset="UTF-8">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="style/style.css">
+
+
+    <title>Title</title>
+</head>
+
+<body>
+    <div>
+        <form th:action="@{/sites}" th:method="POST" th:object="${climbingSiteFilter}">
+            <fieldset>
+                <select  th:field="*{region}">
+                    <option th:name="'Tous'" th:text="'Tous'" th:value="null"></option>
+                    <option th:each="d : ${regions}" th:text="${d}" th:name="${d}" th:value="${d}"></option>
+                </select>
+                <select th:field="*{difficulty}">
+                    <option th:name="'Tous'" th:text="'Tous'" th:value="null" ></option>
+                    <option th:each="d : ${difficultys}" th:text="${d}" th:name="${d}" th:value="${d}"></option>
+                </select>
+                <input type="number" th:field="*{sectorAmount}" />
+                <input type="submit"  th:value="Filtrer" />
+            </fieldset>
+        </form>
+    </div>
+    <div th:each="climbingsite : ${climbingsites}">
+        <div th:object="${climbingsite}">
+            <p th:text="'Nom: ' + *{getDisplayName()}"></p>
+            <p th:text="'Secteurs: ' + *{getSectorAmount()}"></p>
+            <p th:text="'Voies: ' + *{getWayAmount()}"></p>
+            <p th:text="'Longueur: ' + *{getLength()}"></p>
+            <hr />
+        </div>
+    </div>
+</body>
+</html>

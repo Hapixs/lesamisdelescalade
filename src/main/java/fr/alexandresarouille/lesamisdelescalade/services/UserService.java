@@ -2,11 +2,21 @@ package fr.alexandresarouille.lesamisdelescalade.services;
 
 import fr.alexandresarouille.lesamisdelescalade.dao.UserRepository;
 import fr.alexandresarouille.lesamisdelescalade.entities.User;
+import fr.alexandresarouille.lesamisdelescalade.entities.enums.Role;
+import fr.alexandresarouille.lesamisdelescalade.exception.EntityAlreadyExistException;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,7 +27,7 @@ import java.util.Optional;
  **/
 @Service
 @Transactional
-public class UserService implements IUserService {
+public class UserService implements IUserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -65,5 +75,40 @@ public class UserService implements IUserService {
         User target = findByIdIfExist(id);
 
         userRepository.delete(target);
+    }
+
+    @Override
+    public void createUserAccount(User user) throws EntityAlreadyExistException {
+        Optional<User> target = userRepository.findByEmailOrUsername(user.getEmail());
+
+        if(target.isPresent())
+            throw new EntityAlreadyExistException("Cette email est déjà utilisée!");
+
+        target = userRepository.findByEmailOrUsername(user.getUsername());
+
+        if(target.isPresent())
+            throw new EntityAlreadyExistException("Ce nom d'utilisateur est déjà pris");
+
+        user.setRole(Role.USER);
+        createUser(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        Optional<User> target = userRepository.findByEmailOrUsername(s);
+
+        if(!target.isPresent())
+            throw new UsernameNotFoundException("Utilisateur introuvable");
+
+        User user = target.get();
+        List<GrantedAuthority> authorityList = new ArrayList<>();
+        authorityList.add(new SimpleGrantedAuthority(user.getRole().toString()));
+
+
+        UserDetails details = new org.springframework.security.core.userdetails.User(
+            user.getUsername(), user.getPassword(), authorityList
+        );
+
+        return details;
     }
 }

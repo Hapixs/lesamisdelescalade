@@ -1,6 +1,9 @@
 package fr.alexandresarouille.lesamisdelescalade.configuration;
 
+import fr.alexandresarouille.lesamisdelescalade.entities.User;
 import fr.alexandresarouille.lesamisdelescalade.entities.enums.Role;
+import fr.alexandresarouille.lesamisdelescalade.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,11 +16,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 
+    @Autowired
+    private UserService userService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-        auth
+        auth    .userDetailsService(userService)
+                .and()
                 .inMemoryAuthentication()
                 .passwordEncoder(bCryptPasswordEncoder())
                 .withUser("admin")
