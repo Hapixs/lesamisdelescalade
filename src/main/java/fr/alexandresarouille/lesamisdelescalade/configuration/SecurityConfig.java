@@ -22,13 +22,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-        auth    .userDetailsService(userService)
-                .and()
+        auth
                 .inMemoryAuthentication()
                 .passwordEncoder(bCryptPasswordEncoder())
-                .withUser("admin")
-                .password("admin")
-                .authorities(Role.ADMIN.name());
+                .and()
+                .userDetailsService(userService);
+
+        userService.createUserAccount(new User("admin", "admin", "admin", Role.ADMIN));
 
     }
 
@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 
                 .disable()
                 .formLogin()
-                .defaultSuccessUrl("/index")
+                .defaultSuccessUrl("/")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/**").permitAll()

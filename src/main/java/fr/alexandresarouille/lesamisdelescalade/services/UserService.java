@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,8 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public Optional<User> findById(Integer id) {
@@ -61,7 +63,7 @@ public class UserService implements IUserService, UserDetailsService {
 
         target.setUsername(user.getUsername() == null || user.getUsername().isEmpty() ? target.getUsername() : user.getUsername());
         target.setEmail(user.getEmail() == null || user.getEmail().isEmpty() ? target.getEmail() : user.getEmail());
-        target.setPassword(user.getPassword() == null || user.getPassword().isEmpty() ? target.getPassword() : user.getPassword());
+        target.setPassword(bCryptPasswordEncoder.encode(user.getPassword() == null || user.getPassword().isEmpty() ? target.getPassword() : user.getPassword()));
 
         target.setRole(user.getRole() == null ? target.getRole() : user.getRole());
 
@@ -90,6 +92,7 @@ public class UserService implements IUserService, UserDetailsService {
             throw new EntityAlreadyExistException("Ce nom d'utilisateur est déjà pris");
 
         user.setRole(Role.USER);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         createUser(user);
     }
 

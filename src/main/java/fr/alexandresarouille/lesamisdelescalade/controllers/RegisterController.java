@@ -9,7 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+@RequestMapping("/register")
 @Controller
 public class RegisterController {
 
@@ -17,14 +19,14 @@ public class RegisterController {
     private IUserService userService;
 
 
-    @GetMapping("/register")
+    @GetMapping
     public String getRegisterPage(Model model) {
         User user = new User();
         model.addAttribute("newUser", user);
         return "register";
     }
 
-    @PostMapping("/register")
+    @PostMapping
     public String registerNewUser(Model model, @ModelAttribute("newUser") User user) {
         try {
             userService.createUserAccount(user);
