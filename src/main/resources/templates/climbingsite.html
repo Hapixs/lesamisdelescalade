@@ -37,6 +37,7 @@
                 <p th:text="*{getContent()}"></p>
                 <div sec:authorize="hasAuthority('ADMIN')">
                     <a th:href="@{/sites/editCommentary(comid=*{getId()})}">Editer</a>
+                    <a th:href="@{/sites/removeCommentary(comid=*{getId()},siteid=${site.getId()})}">Supprimer</a>
                 </div>
             </div>
         </div>

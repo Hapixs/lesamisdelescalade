@@ -127,6 +127,21 @@ public class ClimbingSitesController {
         return "redirect:/sites/site";
     }
 
+    @RequestMapping("removeCommentary")
+    public String removeCommentary(Model model,
+                                   @RequestParam("comid") Integer comid,
+                                   @RequestParam("siteid") Integer siteid,
+                                   RedirectAttributes redirectAttributes) {
+
+        try {
+            commentaryService.deleteCommentary(comid);
+        } catch (EntityNotExistException e) {
+            e.printStackTrace();
+        }
+        redirectAttributes.addAttribute("siteid", siteid);
+        return "redirect:/sites/site";
+    }
+
     @GetMapping("tagSite")
     public String tagSite(Model model,
                           @RequestParam("siteid")Integer siteid,
