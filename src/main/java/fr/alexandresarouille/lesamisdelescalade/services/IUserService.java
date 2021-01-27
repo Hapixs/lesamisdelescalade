@@ -18,7 +18,9 @@ public interface IUserService {
 
     public User findByIdIfExist(Integer id) throws EntityNotExistException;
 
+    public Optional<User> findByUsernameOrEmail(String s);
 
+    public User findByUsernameOrEmailIfExist(String s) throws EntityNotExistException;
 
     public User createUser(User user);
 
@@ -27,4 +29,5 @@ public interface IUserService {
     public void deleteUser(Integer id) throws EntityNotExistException;
 
     public void createUserAccount(User user) throws EntityAlreadyExistException;
+
 }

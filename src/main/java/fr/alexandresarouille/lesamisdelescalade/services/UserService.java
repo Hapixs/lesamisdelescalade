@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,21 @@ public class UserService implements IUserService, UserDetailsService {
     public User findByIdIfExist(Integer id) throws EntityNotExistException {
 
         Optional<User> target = findById(id);
+
+        if(!target.isPresent())
+            throw new EntityNotExistException("Utilisateur introuvable.");
+
+        return target.get();
+    }
+
+    @Override
+    public Optional<User> findByUsernameOrEmail(String s) {
+        return userRepository.findByEmailOrUsername(s);
+    }
+
+    @Override
+    public User findByUsernameOrEmailIfExist(String s) throws EntityNotExistException {
+        Optional<User> target = findByUsernameOrEmail(s);
 
         if(!target.isPresent())
             throw new EntityNotExistException("Utilisateur introuvable.");
@@ -91,7 +107,8 @@ public class UserService implements IUserService, UserDetailsService {
         if(target.isPresent())
             throw new EntityAlreadyExistException("Ce nom d'utilisateur est déjà pris");
 
-        user.setRole(Role.USER);
+        if(user.getRole()==null)
+            user.setRole(Role.USER);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         createUser(user);
     }

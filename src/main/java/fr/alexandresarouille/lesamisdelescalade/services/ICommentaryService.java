@@ -3,6 +3,8 @@ package fr.alexandresarouille.lesamisdelescalade.services;
 import fr.alexandresarouille.lesamisdelescalade.entities.ClimbingSite;
 import fr.alexandresarouille.lesamisdelescalade.entities.Commentary;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Optional;
 
@@ -26,4 +28,5 @@ public interface ICommentaryService {
 
     public void deleteCommentary(Integer id) throws EntityNotExistException;
 
+    public Page<Commentary> findByClimbingSite(PageRequest pageRequest, ClimbingSite site);
 }

@@ -1,7 +1,11 @@
 package fr.alexandresarouille.lesamisdelescalade.configuration;
 
+import fr.alexandresarouille.lesamisdelescalade.entities.ClimbingSite;
 import fr.alexandresarouille.lesamisdelescalade.entities.User;
+import fr.alexandresarouille.lesamisdelescalade.entities.enums.Difficulty;
+import fr.alexandresarouille.lesamisdelescalade.entities.enums.Region;
 import fr.alexandresarouille.lesamisdelescalade.entities.enums.Role;
+import fr.alexandresarouille.lesamisdelescalade.services.ClimbingSiteService;
 import fr.alexandresarouille.lesamisdelescalade.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ClimbingSiteService climbingSiteService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -29,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
                 .userDetailsService(userService);
 
         userService.createUserAccount(new User("admin", "admin", "admin", Role.ADMIN));
-
+        climbingSiteService.createClimbingSite(new ClimbingSite("TEST", "TEST", Region.GRAND_EST, 10, 10, 10, true, Difficulty.HIGH));
     }
 
     @Override

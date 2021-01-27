@@ -1,9 +1,12 @@
 package fr.alexandresarouille.lesamisdelescalade.services;
 
 import fr.alexandresarouille.lesamisdelescalade.dao.CommentaryRepostitory;
+import fr.alexandresarouille.lesamisdelescalade.entities.ClimbingSite;
 import fr.alexandresarouille.lesamisdelescalade.entities.Commentary;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,5 +71,10 @@ public class CommentaryService implements ICommentaryService {
         Commentary target = findByIdIfExist(id);
 
         CommentaryRepository.delete(target);
+    }
+
+    @Override
+    public Page<Commentary> findByClimbingSite(PageRequest pageRequest, ClimbingSite site) {
+        return CommentaryRepository.findAllByClimbingSite(pageRequest, site);
     }
 }

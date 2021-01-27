@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta charset="UTF-8">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="style/style.css">
+
+
+    <title>Title</title>
+</head>
+
+<body>
+    <div>
+        <div>
+            <p th:text="'Site: ' + ${site.getDisplayName()}"></p>
+        </div>
+
+        <div>
+            <div th:each="commentary : ${coms}" th:object="${commentary}">
+                <p th:text="'Ecrit par: ' + *{getUser().getUsername()}"></p>
+                <p th:text="*{getContent()}"></p>
+                <div sec:authorize="hasAuthority('ADMIN')">
+                    <a th:href="@{/sites/editCommentary(comid=*{getId()})}">Editer</a>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div sec:authorize="isAuthenticated()">
+            <form th:action="@{/sites/site(siteid=${site.getId()})}" th:method="POST" th:object="${postCommentary}">
+                <input type="text" th:value="Commentaire" th:field="*{content}" />
+                <input type="submit" th:value="Commenter">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

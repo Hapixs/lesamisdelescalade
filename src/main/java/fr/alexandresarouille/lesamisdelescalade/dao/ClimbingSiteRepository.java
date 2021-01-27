@@ -29,4 +29,5 @@ public interface ClimbingSiteRepository extends JpaRepository<ClimbingSite, Inte
                                               @Param("region")Region region,
                                               @Param("difficulty")Difficulty difficulty,
                                               @Param("sectors")Integer sectors);
+
 }

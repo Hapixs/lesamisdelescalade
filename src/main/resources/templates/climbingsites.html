@@ -48,6 +48,7 @@
             <p th:text="'Secteurs: ' + *{getSectorAmount()}"></p>
             <p th:text="'Voies: ' + *{getWayAmount()}"></p>
             <p th:text="'Longueur: ' + *{getLength()}"></p>
+            <a th:href="@{/sites/site(siteid=*{getId()})}" th:text="'Voir plus'"></a>
             <hr />
         </div>
     </div>
