@@ -126,4 +126,21 @@ public class ClimbingSitesController {
         redirectAttributes.addAttribute("siteid", commentary.getClimbingSite().getId());
         return "redirect:/sites/site";
     }
+
+    @GetMapping("tagSite")
+    public String tagSite(Model model,
+                          @RequestParam("siteid")Integer siteid,
+                          RedirectAttributes redirectAttributes) {
+        try {
+            ClimbingSite site = climbingSiteService.findByIdIfExist(siteid);
+
+            site.setOfficial(!site.getOfficial());
+
+            climbingSiteService.editClimbingSite(site, site.getId());
+        } catch (EntityNotExistException e) {
+            e.printStackTrace();
+        }
+        redirectAttributes.addAttribute("siteid", siteid);
+        return "redirect:/sites/site";
+    }
 }
