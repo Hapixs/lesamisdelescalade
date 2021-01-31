@@ -2,8 +2,11 @@ package fr.alexandresarouille.lesamisdelescalade.services;
 
 import fr.alexandresarouille.lesamisdelescalade.dao.ReservationRepository;
 import fr.alexandresarouille.lesamisdelescalade.entities.Reservation;
+import fr.alexandresarouille.lesamisdelescalade.entities.Topo;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,5 +65,10 @@ public class ReservationService implements IReservationService {
         Reservation target = findByIdIfExist(id);
 
         reservationRepository.delete(target);
+    }
+
+    @Override
+    public Page<Reservation> listAllByTopo(PageRequest pageRequest, Topo topo) {
+        return reservationRepository.findAllByTopo(pageRequest, topo);
     }
 }

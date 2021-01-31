@@ -2,8 +2,11 @@ package fr.alexandresarouille.lesamisdelescalade.services;
 
 import fr.alexandresarouille.lesamisdelescalade.dao.TopoRepository;
 import fr.alexandresarouille.lesamisdelescalade.entities.Topo;
+import fr.alexandresarouille.lesamisdelescalade.entities.User;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,5 +72,20 @@ public class TopoService implements ITopoService {
         Topo target = findByIdIfExist(id);
 
         topoRepository.delete(target);
+    }
+
+    @Override
+    public Page<Topo> listByUser(PageRequest pageRequest, User user) {
+        return topoRepository.findAllByUser(pageRequest, user);
+    }
+
+    @Override
+    public Page<Topo> listAll(PageRequest pageRequest) {
+        return topoRepository.findAll(pageRequest);
+    }
+
+    @Override
+    public Page<Topo> listAllWithNotUser(PageRequest pageRequest, User user) {
+        return topoRepository.findAllWithNotUser(pageRequest, user);
     }
 }

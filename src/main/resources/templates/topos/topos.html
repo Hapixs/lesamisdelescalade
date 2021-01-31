@@ -25,9 +25,13 @@
 </head>
 
 <body>
-        <div>
-            <a th:href="@{/user/registerNewSite}">Enregistrer un nouveau site</a>
-            <a th:href="@{/user/topos}">Mes topos</a>
-        </div>
+    <div th:each="t : ${topos}" th:object="${t}">
+        <p th:text="'Nom : ' + *{displayName}"></p>
+        <p th:text="'Description : ' + *{description}"></p>
+        <p th:text="'Region : ' + *{region}"></p>
+        <p th:text="'Disponible : ' + (*{getAvailable()} ? 'Oui' : 'Non')"></p>
+        <a sec:authorize="isAuthenticated()" th:href="@{/topos/askForReservation(id=*{getId()})}" th:if="*{getAvailable()}">Demande de résérvation</a>
+        <hr />
+    </div>
 </body>
 </html>

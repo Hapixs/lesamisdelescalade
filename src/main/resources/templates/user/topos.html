@@ -25,9 +25,18 @@
 </head>
 
 <body>
-        <div>
-            <a th:href="@{/user/registerNewSite}">Enregistrer un nouveau site</a>
-            <a th:href="@{/user/topos}">Mes topos</a>
+        <a th:href="@{/user/registerNewTopo}">Ajouter un nouveau topo</a>
+        <div th:each="t : ${topos}" th:object="${t}">
+            <p th:text="'Nom: ' + *{displayName}"></p>
+            <p th:text="'Description ' + *{description}"></p>
+            <p th:text="'Disponible: ' + (*{getAvailable()} ?  'Oui' : 'Non')"></p>
+            <div th:if="*{getAvailable()}">
+                <a th:href="@{/topos/reservations(id=*{getId()})}">Voir les resérvations:</a>
+            </div>
+            <div th:unless="*{getAvailable()}">
+                <p th:text="'Reserver par: ' + ${reservationsComplete.get(t.getId()).getEmail()}"></p>
+                <a th:text="'Activer la disponibilitée'" th:href="@{/topos/setavailable(id=*{id})}"></a>
+            </div>
         </div>
 </body>
 </html>

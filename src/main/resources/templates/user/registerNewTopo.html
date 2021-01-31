@@ -25,9 +25,13 @@
 </head>
 
 <body>
-        <div>
-            <a th:href="@{/user/registerNewSite}">Enregistrer un nouveau site</a>
-            <a th:href="@{/user/topos}">Mes topos</a>
-        </div>
+        <form th:action="@{/user/registerNewTopo}" th:method="POST" th:object="${topo}">
+            <input type="text" th:field="*{displayName}"/>
+            <input type="text" th:field="*{description}"/>
+            <select th:field="*{region}">
+                <option th:each="r : ${regions}" th:value="${r}" th:text="${r}"></option>
+            </select>
+            <input type="submit" th:value="Ajouter"/>
+        </form>
 </body>
 </html>
