@@ -3,6 +3,7 @@ package fr.alexandresarouille.lesamisdelescalade.entities;
 import fr.alexandresarouille.lesamisdelescalade.entities.enums.Difficulty;
 import fr.alexandresarouille.lesamisdelescalade.entities.enums.Region;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -64,6 +65,8 @@ public class ClimbingSite {
 
     // VARIABLES
     private String displayName; // NOM DU SITE
+
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String description; // DESCRIPTION DU SITE
 
     private Region region;      // REGION DU SITE

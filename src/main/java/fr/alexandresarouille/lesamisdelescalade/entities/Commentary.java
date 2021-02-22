@@ -52,6 +52,7 @@ public class Commentary {
     @ManyToOne
     private User user; // UTILISATEUR A L ORGINE DU COMMENTAIRE
 
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String content; // CONTENUE DU COMMENTAIRE
 
     @ManyToOne

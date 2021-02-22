@@ -14,11 +14,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("topos")
@@ -31,56 +32,36 @@ public class TopoController {
     @Autowired
     private IReservationService reservationService;
 
-    /*@GetMapping("register")
-    public String registerTopo(Model model) {
-
-        model.addAttribute("topo", new Topo());
-        return "topos/register";
-    }
-
-    @PostMapping("register")
-    public String createTopo(Model model,
-                             @ModelAttribute("topo") Topo topo
-                             ,Authentication auth) {
-
-        if(auth == null || !auth.isAuthenticated())
-            return "redirect:/";
-
-        try {
-            User user = userService.findByUsernameOrEmailIfExist(auth.getName());
-
-            topo.setReleaseDate(new Date());
-            topo.setUser(user);
-            topo.setAvailable(true);
-
-            topoService.createTopo(topo);
-
-        } catch (EntityNotExistException e) {
-            e.printStackTrace();
-        }
-
-        return registerTopo(model);
-    }*/
-
     @RequestMapping("topos")
-    public String listTopo(Model model, Authentication auth) {
+    public String listTopo(Model model, Authentication auth, RedirectAttributes redirectAttributes,
+                           @ModelAttribute(value = "succes", binding = false) String succes,
+                           @ModelAttribute(value = "error", binding = false) String error,
+                           @RequestParam(value = "page", required = false) Integer page,
+                           @RequestParam(value = "items", required = false) Integer items) {
 
-        PageRequest pagerequest = PageRequest.of(0, 10);
+        int page_size = items == null ? 10 : items;
+        int page_number = page == null ? 0 : page;
+
+        PageRequest pagerequest = PageRequest.of(page_number, page_size);
 
         Page<Topo> topos;
+
         User user = null;
 
         if(auth != null && auth.isAuthenticated())
             try {
                 user = userService.findByUsernameOrEmailIfExist(auth.getName());
             } catch (EntityNotExistException e) {
-                e.printStackTrace();
+                redirectAttributes.addAttribute("error", "Une erreur c'est produite lors de l'affichage des topo.");
+                return "redirect:/index";
             }
 
-        // TODO: remettre user
-        topos = topoService.listAllWithNotUser(pagerequest, null);
+        topos = topoService.listAllWithNotUser(pagerequest, user);
 
         model.addAttribute("topos", topos);
+
+        model.addAttribute("error", error);
+        model.addAttribute("succes", succes);
 
         return "topos/topos";
     }
@@ -88,79 +69,105 @@ public class TopoController {
     @RequestMapping("askForReservation")
     public String createReservation(Model model,
                                     Authentication auth,
-                                    @RequestParam("id") Integer id) {
+                                    @RequestParam("id") Integer id,
+                                    RedirectAttributes redirectAttributes) {
 
         try {
-            System.out.println("e");
+
             if(auth == null || !auth.isAuthenticated())
                 return "redirect:/topos/topos";
-            System.out.println("e");
+
+
             User user = userService.findByUsernameOrEmailIfExist(auth.getName());
 
             Topo topo = topoService.findByIdIfExist(id);
 
+            Optional<Reservation> hasReservation = reservationService.getReservationByTopoAndUser(topo, user);
+
+            if(hasReservation.isPresent()){
+                redirectAttributes.addAttribute("error", "Vous avez déjà fait une réservation pour ce topo.");
+                return "redirect:/topos/topos";
+            }
+            redirectAttributes.addAttribute("error", "Votre réservation à bien été enregistrée.");
             Reservation reservation = new Reservation(user, topo);
 
             reservationService.createReservation(reservation);
         } catch (EntityNotExistException e) {
-            e.printStackTrace();
+            redirectAttributes.addAttribute("error", "Une erreur c'est produite (topo introuvable). Veuillez nous excuser.");
         }
 
         return "redirect:/topos/topos";
     }
 
     @RequestMapping("reservations")
-    public String listReservations(Model model, @RequestParam("id") Integer id) {
+    public String listReservations(Model model, @RequestParam("id") Integer id,
+                                   @ModelAttribute(value = "succes", binding = false) String succes,
+                                   @ModelAttribute(value = "error", binding = false) String error) {
         try {
             Topo topo = topoService.findByIdIfExist(id);
-            PageRequest pageRequest = PageRequest.of(0, 10);
+            PageRequest pageRequest = PageRequest.of(0, 99999999);
 
             Page<Reservation> reservations = reservationService.listAllByTopo(pageRequest, topo);
 
             model.addAttribute("reservations", reservations);
+
         } catch (EntityNotExistException e) {
-            e.printStackTrace();
+            model.addAttribute("error", "Une erreur c'est produite (topo introuvable). Veuillez nous excuser.");
+            return "/topos/reservations";
         }
+
+        model.addAttribute("succes" ,succes);
+        model.addAttribute("error", error);
 
         return "/topos/reservations";
     }
 
     @RequestMapping("confirmReservation")
-    public String confirmReservation(Model model, @RequestParam("id") Integer id) {
+    public String confirmReservation(Model model, @RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             Reservation reservation = reservationService.findByIdIfExist(id);
-            Topo topo = new Topo();
+            reservation.setAccepted(true);
+            reservationService.editReservation(reservation, reservation.getId());
+
+            Topo topo = reservation.getTopo();
+            topo.setCurrentReservation(reservation);
             topo.setAvailable(false);
-
-            topoService.editTopo(topo, reservation.getTopo().getId());
-            Page<Reservation> res = reservationService.listAllByTopo(PageRequest.of(0, 99999999), reservation.getTopo());
-
-            for(Reservation r : res.toList())
-                if(!r.getId().equals(reservation.getId()))
-                    reservationService.deleteReservation(r.getId());
+            topoService.editTopo(topo, topo.getId());
         } catch (EntityNotExistException e) {
-            e.printStackTrace();
+            redirectAttributes.addAttribute("error", "Une erreur c'est produite (Réservation introuvable). Veuillez nous excuser.");
         }
 
         return "redirect:/user/topos";
     }
 
     @RequestMapping("setavailable")
-    public String setTopoAvailable(Model model, @RequestParam("id") Integer id) {
+    public String setTopoAvailable(Model model, @RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
+        Topo topo = null;
         try {
-            Topo topo = topoService.findByIdIfExist(id);
-
-            List<Reservation> reservationList = reservationService.listAllByTopo(PageRequest.of(0, 999999), topo).getContent();
-
-            for(Reservation r : reservationList)
-                reservationService.deleteReservation(r.getId());
-
-            Topo changes = new Topo();
-            changes.setAvailable(true);
-            topoService.editTopo(changes, topo.getId());
-        } catch (EntityNotExistException e) {
-            e.printStackTrace();
+            topo = topoService.findByIdIfExist(id);
+        } catch (EntityNotExistException e){
+            redirectAttributes.addAttribute("error", "Une erreur c'est produite (topo introuvable). Veuillez nous excuser.");
+            return "redirect:/user/topos";
         }
+
+        Optional<Reservation> reservation;
+
+        try {
+
+            reservation = reservationService.getConfirmedReservationForTopo(topo);
+
+            if(reservation.isPresent()) {
+                reservationService.deleteReservation(reservation.get().getId());
+            }
+
+            topo.setCurrentReservation(null);
+            topo.setAvailable(true);
+            topoService.editTopo(topo, topo.getId());
+
+        } catch (EntityNotExistException e) {
+            redirectAttributes.addAttribute("error", "Une erreur c'est produite (Réservation introuvable). Veuillez nous excuser.");
+        }
+
         return "redirect:/user/topos";
     }
 }

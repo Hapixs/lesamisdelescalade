@@ -7,9 +7,12 @@ import fr.alexandresarouille.lesamisdelescalade.entities.enums.Region;
 import fr.alexandresarouille.lesamisdelescalade.entities.enums.Role;
 import fr.alexandresarouille.lesamisdelescalade.services.ClimbingSiteService;
 import fr.alexandresarouille.lesamisdelescalade.services.UserService;
+import org.aspectj.apache.bcel.classfile.BootstrapMethods;
+import org.hibernate.jpa.boot.spi.Bootstrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.repository.config.BootstrapMode;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,8 +25,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private ClimbingSiteService climbingSiteService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -34,8 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
                 .and()
                 .userDetailsService(userService);
 
-        userService.createUserAccount(new User("admin", "admin", "admin", Role.ADMIN));
-        climbingSiteService.createClimbingSite(new ClimbingSite("TEST", "TEST", Region.GRAND_EST, 10, 10, 10, true, Difficulty.HIGH));
     }
 
     @Override

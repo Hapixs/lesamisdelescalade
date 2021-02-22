@@ -88,4 +88,14 @@ public class TopoService implements ITopoService {
     public Page<Topo> listAllWithNotUser(PageRequest pageRequest, User user) {
         return topoRepository.findAllWithNotUser(pageRequest, user);
     }
+
+    @Override
+    public Page<Topo> listAllReservedForUser(PageRequest pageRequest, User user) {
+        return topoRepository.findAllByUserAndAvailable(pageRequest, user, false);
+    }
+
+    @Override
+    public Page<Topo> listAllNotReservedForUser(PageRequest pageRequest, User user) {
+        return topoRepository.findAllByUserAndAvailable(pageRequest, user, true);
+    }
 }

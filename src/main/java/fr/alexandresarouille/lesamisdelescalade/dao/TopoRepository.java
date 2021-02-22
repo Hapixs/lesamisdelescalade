@@ -24,4 +24,7 @@ public interface TopoRepository extends JpaRepository<Topo, Integer> {
 
     @Query("SELECT t FROM topo t WHERE (:user IS NULL OR t.user <> :user)")
     Page<Topo> findAllWithNotUser(Pageable pageable, @Param("user")User user);
+
+    @Query("SELECT t FROM topo t WHERE t.user=:user AND t.available=:available")
+    Page<Topo> findAllByUserAndAvailable(Pageable pageable, @Param("user") User user, @Param("available") boolean available);
 }

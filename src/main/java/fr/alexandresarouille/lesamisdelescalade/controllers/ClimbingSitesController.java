@@ -35,9 +35,14 @@ public class ClimbingSitesController {
     @RequestMapping
     public String getSiteList(Model model,
                               HttpSession session,
-                              @ModelAttribute(value = "climbingSiteFilter") ClimbingSite climbingSiteFilter) {
-        int page_size = 10;
-        int page_number = 0;
+                              @RequestParam(value = "page", required = false) Integer page,
+                              @RequestParam(value = "items", required = false) Integer items,
+                              @ModelAttribute(value = "climbingSiteFilter") ClimbingSite climbingSiteFilter,
+                              @ModelAttribute(value = "succes", binding = false) String succes,
+                              @ModelAttribute(value = "error", binding = false) String error) {
+
+        int page_size = items == null ? 12 : items;
+        int page_number = page == null ? 0 : page;
 
         PageRequest pageRequest = PageRequest.of(page_number, page_size);
 
@@ -45,21 +50,28 @@ public class ClimbingSitesController {
                 ? new ClimbingSite()
                 : climbingSiteFilter;
 
-        Page<ClimbingSite> page = climbingSiteService.listAllByFilter(pageRequest, climbingSiteFilter);
+        Page<ClimbingSite> sites = climbingSiteService.listAllByFilter(pageRequest, climbingSiteFilter);
 
-        model.addAttribute("climbingsites", page);
+        model.addAttribute("climbingsites", sites);
         model.addAttribute("climbingSiteFilter", climbingSiteFilter);
         model.addAttribute("difficultys", Difficulty.values());
         model.addAttribute("regions", Region.values());
+        model.addAttribute("error", error);
+        model.addAttribute("succes", succes);
+
 
         return "climbingsites";
     }
 
     @GetMapping("site")
-    public String getSiteInformation(Model model, @RequestParam("siteid") Integer siteid) {
+    public String getSiteInformation(Model model,
+                                     @ModelAttribute(value = "succes", binding = false) String succes,
+                                     @ModelAttribute(value = "error", binding = false) String error,
+                                     @RequestParam("id") Integer siteid,
+                                     RedirectAttributes redirectAttributes) {
         try {
             ClimbingSite site = climbingSiteService.findByIdIfExist(siteid);
-            PageRequest pageRequest = PageRequest.of(0, 10);
+            PageRequest pageRequest = PageRequest.of(0, 999999999);
 
             Page<Commentary> coms = commentaryService.findByClimbingSite(pageRequest, site);
 
@@ -68,46 +80,81 @@ public class ClimbingSitesController {
             model.addAttribute("postCommentary", new Commentary());
 
         } catch (EntityNotExistException e) {
-            e.printStackTrace();
+            redirectAttributes.addAttribute("error", "Une erreur c'est produite (site introuvable). Veuillez nous excuser.");
+            return "redirect:/index";
         }
+
+        model.addAttribute("succes", succes);
+        model.addAttribute("error", error);
+
         return "climbingsite";
     }
 
     @PostMapping("site")
     public String postCommentaryOnSite(Model model,
                                        @ModelAttribute("postCommentary") Commentary commentary,
-                                       @RequestParam("siteid") Integer siteid,
+                                       @ModelAttribute(value = "succes", binding = false) String succes,
+                                       @ModelAttribute(value = "error", binding = false) String error,
+                                       RedirectAttributes redirectAttributes,
+                                       @RequestParam("id") Integer siteid,
                                        Authentication auth) {
 
         if( auth == null || !auth.isAuthenticated())
-            return "redirect:/";
+            return "redirect:/login";
 
+        redirectAttributes.addAttribute("id", siteid);
+
+        ClimbingSite site = null;
         try {
-            ClimbingSite site = climbingSiteService.findByIdIfExist(siteid);
-            User user = userService.findByUsernameOrEmailIfExist(auth.getName());
+            site = climbingSiteService.findByIdIfExist(siteid);
+        } catch (EntityNotExistException e) {
+            redirectAttributes.addAttribute("error", "Une erreur c'est produite (site introuvable). Veuillez nous excuser.");
+            return "redirect:/sites";
+        }
 
 
+        User user = null;
+        try {
+             user = userService.findByUsernameOrEmailIfExist(auth.getName());
+        } catch (EntityNotExistException e) {
+            redirectAttributes.addAttribute("error", "Une erreur c'est produite (utilisateur introuvable). Veuillez nous excuser.");
+            return "redirect:/sites/site";
+        }
+
+        if(commentary.getContent().isEmpty()) {
+            error = "Votre commentaire doit contenir du texte.";
+        } else {
             commentary.setClimbingSite(site);
             commentary.setUser(user);
 
             commentaryService.createCommentary(commentary);
-        } catch (EntityNotExistException e) {
-            e.printStackTrace();
+            succes = "Votre commentaire vient d'être poster.";
         }
-        return getSiteInformation(model, siteid);
+
+        redirectAttributes.addAttribute("succes", succes);
+        redirectAttributes.addAttribute("error", error);
+
+        return "redirect:/sites/site";
     }
 
     @GetMapping("editCommentary")
     public String editCommentary(Model model,
-                                 @RequestParam("comid") Integer comid){
+                                 @ModelAttribute(value = "succes", binding = false) String succes,
+                                 @ModelAttribute(value = "error", binding = false) String error,
+                                 @RequestParam("comid") Integer comid,
+                                 RedirectAttributes redirectAttributes){
 
         try {
             Commentary com = commentaryService.findByIdIfExist(comid);
-            System.out.println(com.getId());
             model.addAttribute("commentary", com);
         } catch (EntityNotExistException e) {
-            e.printStackTrace();
+            redirectAttributes.addAttribute("error", "Une erreur c'est produite (commentaire introuvable). Veuillez nous excuser.");
+            return "redirect:/sites";
         }
+
+        model.addAttribute("succes", succes);
+        model.addAttribute("error", error);
+
         return "editCommentary";
     }
 
@@ -117,45 +164,61 @@ public class ClimbingSitesController {
                                  @ModelAttribute("commentary") Commentary commentary,
                                  RedirectAttributes redirectAttributes){
 
+        redirectAttributes.addAttribute("comid", comid);
 
         try {
+            if(commentary.getContent().isEmpty()) {
+                redirectAttributes.addAttribute("error","Le commentaire doit contenir du text.");
+                redirectAttributes.addAttribute("commentary", commentary);
+                return "redirect:/sites/editCommentary";
+            }
             commentary = commentaryService.editCommentary(commentary, comid);
+            redirectAttributes.addAttribute("succes", "Les commentaire vient d'être modifier.");
         } catch (EntityNotExistException e) {
-            e.printStackTrace();
+            redirectAttributes.addAttribute("error", "Une erreur c'est produite (commentaire introuvable). Veuillez nous excuser.");
+            return "redirect:/sites";
         }
-        redirectAttributes.addAttribute("siteid", commentary.getClimbingSite().getId());
+        redirectAttributes.addAttribute("id", commentary.getClimbingSite().getId());
         return "redirect:/sites/site";
     }
 
     @RequestMapping("removeCommentary")
     public String removeCommentary(Model model,
                                    @RequestParam("comid") Integer comid,
-                                   @RequestParam("siteid") Integer siteid,
                                    RedirectAttributes redirectAttributes) {
-
+        Commentary com = null;
         try {
-            commentaryService.deleteCommentary(comid);
+            com = commentaryService.findByIdIfExist(comid);
+            commentaryService.deleteCommentary(com.getId());
+            redirectAttributes.addAttribute("succes", "Le commentaire à bien été supprimer.");
         } catch (EntityNotExistException e) {
-            e.printStackTrace();
+            redirectAttributes.addAttribute("error", "Une erreur c'est produite (commentaire introuvable). Veuillez nous excuser.");
+            return "redirect:/sites";
         }
-        redirectAttributes.addAttribute("siteid", siteid);
+
+        redirectAttributes.addAttribute("id", com.getClimbingSite().getId());
         return "redirect:/sites/site";
     }
 
-    @GetMapping("tagSite")
+    @RequestMapping("tagSite")
     public String tagSite(Model model,
                           @RequestParam("siteid")Integer siteid,
                           RedirectAttributes redirectAttributes) {
-        try {
-            ClimbingSite site = climbingSiteService.findByIdIfExist(siteid);
 
+        redirectAttributes.addAttribute("id", siteid);
+
+        try {
+
+            ClimbingSite site = climbingSiteService.findByIdIfExist(siteid);
             site.setOfficial(!site.getOfficial());
 
             climbingSiteService.editClimbingSite(site, site.getId());
+            redirectAttributes.addAttribute("succes", "Le site à bien été modifier.");
+
         } catch (EntityNotExistException e) {
-            e.printStackTrace();
+            redirectAttributes.addAttribute("error", "Une erreur c'est produite (site introuvable). Veuillez nous excuser.");
+            return "redirect:/sites";
         }
-        redirectAttributes.addAttribute("siteid", siteid);
         return "redirect:/sites/site";
     }
 }

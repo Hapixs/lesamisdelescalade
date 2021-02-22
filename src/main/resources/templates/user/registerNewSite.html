@@ -25,22 +25,52 @@
 </head>
 
 <body>
-    <div>
-        <form th:action="@{/user/registerNewSite}" th:method="POST" th:object="${newSite}">
-            <input type="text" th:field="*{displayName}">
-            <input type="text" th:field="*{description}">
-            <select th:field="*{region}">
-                <option th:each="r : ${regions}" th:value="${r}" th:text="${r}"></option>
+<div class="container">
+    <div th:replace="/fragments :: nav"> </div>
+
+    <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
+
+    <form class="row m-3" novalidate th:action="@{/user/registerNewSite}" th:method="POST" th:object="${newSite}">
+        <div class="col-sm-12 col-md-4">
+            <label for="inputSiteDisplayName" class="col-form-label">Nom du site</label>
+            <input type="text" class="form-control" id="inputSiteDisplayName" th:field="*{displayName}" th:value="*{displayName}" required>
+        </div>
+        <div class="valid-feedback"> Ok !</div>
+        <div class="col-sm-12 col-md-4">
+            <label for="inputSiteRegion" class="col-form-label">Région</label>
+            <select class="form-select-button form-control" id="inputSiteRegion" th:field="*{region}">
+                <option th:value="null" selected>Choisisez une région</option>
+                <option th:each="r : ${regions}" th:text="${r}" th:value="${r}"></option>
             </select>
-            <input type="number" min="0" th:field="*{sectorAmount}"/>
-            <input type="number" min="0" th:field="*{length}"/>
-            <input type="number" min="0" th:field="*{wayAmount}"/>
-            <input type="checkbox" hidden="hidden" th:value="false" th:field="*{official}">
-            <select th:field="*{difficulty}">
-                <option th:each="d : ${difficulties}" th:value="${d}" th:text="${d}"></option>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <label for="inputSiteDifficulty" class="col-form-label">Cotation</label>
+            <select class="form-select-button form-control" id="inputSiteDifficulty" th:field="*{difficulty}">
+                <option th:value="null" selected>Choisisez une cotation</option>
+                <option th:each="d : ${difficulties}" th:text="${d}" th:value="${d}"></option>
             </select>
-            <input type="submit" th:value="Créer"/>
-        </form>
-    </div>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label for="inputSectorNumber">Nombre de secteurs</label>
+            <input class="form-control" type="number" id="inputSectorNumber" min="0" max="99999999" th:field="*{sectorAmount}" th:value="*{sectorAmount}" required/>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label for="inputLength">Longueur</label>
+            <input class="form-control" type="number" id="inputLength" min="0" max="99999999" th:field="*{length}"  th:value="*{length}" required/>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label for="inputWayAmount">Nombre de voies</label>
+            <input class="form-control" type="number" id="inputWayAmount" min="0" max="99999999" th:field="*{wayAmount}" th:value="*{wayAmount}" required/>
+        </div>
+        <div class="col-12">
+            <label for="inputSiteDescription" class="col-form-label">Description du site</label>
+            <textarea class="form-control" id="inputSiteDescription" th:field="*{description}" th:value="*{description}" required> </textarea>
+        </div>
+
+        <input type="checkbox" hidden="hidden" th:value="false" th:field="*{official}">
+
+        <div class="col-12 mt-4 text-center flex-fill"> <input type="submit" class="btn btn-primary" th:value="Partager"/> </div>
+    </form>
+</div>
 </body>
 </html>

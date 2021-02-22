@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta charset="UTF-8">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="style/style.css">
+
+
+    <title>Title</title>
+</head>
+
+<body>
+        <div th:fragment="nav">
+            <div class="row bg-dark">
+                <div class="col">
+                    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                        <a class="navbar-brand" th:href="@{/}">Les amis de l'escalade</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Menu de navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarMenu">
+                            <ul class="navbar-nav mr-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" th:href="@{/}">Acceuil</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" th:href="@{/sites}">Site d'escalade</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" th:href="@{/topos/topos}">Topos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a sec:authorize="isAuthenticated()" class="nav-link" th:href="@{/user/panel}">Espace utilisateur</a>
+                                    <a sec:authorize="isAnonymous()" class="nav-link" th:href="@{/login}">Connexion</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a sec:authorize="isAnonymous()" class="nav-link" th:href="@{/register}">Inscription</a>
+                                    <a sec:authorize="isAuthenticated()" class="nav-link" th:href="@{/logout}">Deconnexion</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="row w-100 pt-3 align-items-center" th:fragment="notif(succes, error)">
+           <div class="col-12">
+               <div class="alert alert-success text-center" th:if="${succes!=null && succes!=''}" th:text="${succes}"></div>
+               <div class="alert alert-danger text-center" th:if="${error!=null && error!=''}" th:text="${error}"></div>
+           </div>
+        </div>
+</body>
+</html>

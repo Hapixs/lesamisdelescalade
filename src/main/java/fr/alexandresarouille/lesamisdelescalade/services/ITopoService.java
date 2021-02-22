@@ -33,4 +33,8 @@ public interface ITopoService {
     public Page<Topo> listAll(PageRequest pageRequest);
 
     public Page<Topo> listAllWithNotUser(PageRequest pageRequest, User user);
+
+    public Page<Topo> listAllReservedForUser(PageRequest pageRequest, User user);
+
+    public Page<Topo> listAllNotReservedForUser(PageRequest pageRequest, User user);
 }

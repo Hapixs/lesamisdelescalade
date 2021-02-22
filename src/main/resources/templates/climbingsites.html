@@ -26,31 +26,69 @@
 </head>
 
 <body>
+<div class="container">
+    <div th:replace="/fragments :: nav"> </div>
+
+   <form class="row m-2" th:action="@{/sites}" th:method="POST" th:object="${climbingSiteFilter}">
+       <div class="col-lg-12 input-group">
+           <span class="input-group-text" id="inputFilter-region">Région</span>
+           <select class="form-select form-control"
+                   th:field="*{region}"
+                   aria-label="Region input filter"
+                   aria-describedby="inputFilter-region">
+
+               <option th:name="'Tous'" th:text="'Tous'" th:value="null"></option>
+               <option th:each="r : ${regions}" th:text="${r}" th:name="${r}" th:value="${r}"></option>
+           </select>
+       </div>
+       <div class="col-lg-12 input-group">
+           <span class="input-group-text" id="inputFilter-difficulty">Difficulté</span>
+           <select class="form-select form-control"
+                   th:field="*{difficulty}"
+                   aria-label="Difficulty input filter"
+                   aria-describedby="inputFilter-difficulty">
+
+               <option th:name="'Tous'" th:text="'Tous'" th:value="null"></option>
+               <option th:each="d : ${difficultys}" th:text="${d}" th:name="${d}" th:value="${d}"></option>
+           </select>
+       </div>
+
+       <div class="col-lg-6 input-group">
+           <span class="input-group-text" id="inputFilter-sectors-nb">Secteurs</span>
+           <input type="number"
+                  class="form-control"
+                  min="0"
+                  max="99999999"
+                  th:field="*{sectorAmount}"
+                  aria-label="Secteur input filter"
+                  aria-describedby="inputFilter-sectors-nb">
+       </div>
+
+       <div class="col-lg-6 text-right">
+           <button class="btn btn-primary" type="submit">Filtrer</button>
+       </div>
+   </form>
     <div>
-        <form th:action="@{/sites}" th:method="POST" th:object="${climbingSiteFilter}">
-            <fieldset>
-                <select  th:field="*{region}">
-                    <option th:name="'Tous'" th:text="'Tous'" th:value="null"></option>
-                    <option th:each="d : ${regions}" th:text="${d}" th:name="${d}" th:value="${d}"></option>
-                </select>
-                <select th:field="*{difficulty}">
-                    <option th:name="'Tous'" th:text="'Tous'" th:value="null" ></option>
-                    <option th:each="d : ${difficultys}" th:text="${d}" th:name="${d}" th:value="${d}"></option>
-                </select>
-                <input type="number" th:field="*{sectorAmount}" />
-                <input type="submit"  th:value="Filtrer" />
-            </fieldset>
-        </form>
+        <nav aria-label="pagination">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" th:href="@{/sites(page=${climbingsites.previousOrFirstPageable().getPageNumber()})}">Précédent</a></li>
+                <li class="page-item"><a class="page-link" th:href="@{/sites(page=${climbingsites.nextOrLastPageable().getPageNumber()})}">Suivant</a></li>
+            </ul>
+        </nav>
     </div>
-    <div th:each="climbingsite : ${climbingsites}">
-        <div th:object="${climbingsite}">
-            <p th:text="'Nom: ' + *{getDisplayName()}"></p>
-            <p th:text="'Secteurs: ' + *{getSectorAmount()}"></p>
-            <p th:text="'Voies: ' + *{getWayAmount()}"></p>
-            <p th:text="'Longueur: ' + *{getLength()}"></p>
-            <a th:href="@{/sites/site(siteid=*{getId()})}" th:text="'Voir plus'"></a>
-            <hr />
+    <div class="row align-content-center mt-2">
+        <div class="col-sm-12 col-md-6 col-lg-4 mb-4" th:each="site : ${climbingsites}" th:object="${site}">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="*{getDisplayName()}">Site d'escalade</h5>
+                    <h6 class="card-subtitle text-muted" th:text="*{getRegion()}">Aucune région définie</h6>
+
+                    <p class="card-text" th:text="*{getDescription()}">Aucune description</p>
+                    <a class="card-link" th:href="@{/sites/site(id=*{getId()})}">Voir plus</a>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 </body>
 </html>

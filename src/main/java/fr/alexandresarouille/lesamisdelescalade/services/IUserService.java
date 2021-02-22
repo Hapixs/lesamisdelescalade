@@ -28,6 +28,6 @@ public interface IUserService {
 
     public void deleteUser(Integer id) throws EntityNotExistException;
 
-    public void createUserAccount(User user) throws EntityAlreadyExistException;
+    public User createUserAccount(User user) throws EntityAlreadyExistException;
 
 }

@@ -21,17 +21,38 @@
     <link rel="stylesheet" href="style/style.css">
 
 
-    <title>Title</title>
+    <title>Topo</title>
 </head>
 
 <body>
-    <div th:each="t : ${topos}" th:object="${t}">
-        <p th:text="'Nom : ' + *{displayName}"></p>
-        <p th:text="'Description : ' + *{description}"></p>
-        <p th:text="'Region : ' + *{region}"></p>
-        <p th:text="'Disponible : ' + (*{getAvailable()} ? 'Oui' : 'Non')"></p>
-        <a sec:authorize="isAuthenticated()" th:href="@{/topos/askForReservation(id=*{getId()})}" th:if="*{getAvailable()}">Demande de résérvation</a>
-        <hr />
+<div class="container">
+    <div th:replace="/fragments :: nav"> </div>
+    <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
+
+    <div th:if="${topos.isEmpty()}">
+        <h2>Aucun topo trouver...</h2>
     </div>
+    <nav th:unless="${topos.isEmpty()}" aria-label="pagination">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" th:href="@{/topos/topos(page=${topos.previousOrFirstPageable().getPageNumber()})}">Précédent<<</a></li>
+            <li class="page-item"><a class="page-link" th:href="@{/topos/topos(page=${topos.nextOrLastPageable().getPageNumber()})}">Suivant</a></li>
+        </ul>
+    </nav>
+    <div class="row card m-3" th:each="t : ${topos}" th:object="${t}">
+        <div class="card-header">
+            <h4 class="card-title" th:text="*{getDisplayName()}"></h4>
+            <p class="card-subtitle text-muted" th:text="*{getRegion()}"></p>
+            <span th:if="*{getAvailable()}" class="badge badge-success">Disponible</span>
+            <span th:if="*{!getAvailable()}" class="badge badge-danger">Indisponible</span>
+        </div>
+        <div class="card-body">
+            <p class="card-text" th:text="'Poster le: ' + *{#dates.format(releaseDate,'dd/MM/YYYY')}"></p>
+            <p class="card-text text-break" th:text="*{getDescription()}"></p>
+            <div sec:authorize="isAuthenticated()" th:if="*{getAvailable()}">
+                <a class="btn btn-primary"th:href="@{/topos/askForReservation(id=*{getId()})}">Demande de Réservation</a>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

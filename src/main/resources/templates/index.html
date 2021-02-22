@@ -29,36 +29,8 @@
 
     <body>
         <div class="container">
-           <div class="row bg-dark">
-               <div class="col" >
-                   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                       <a class="navbar-brand" href="">Les amis de l'escalade</a>
-                       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Menu de navigation">
-                           <span class="navbar-toggler-icon"></span>
-                       </button>
-                       <div class="collapse navbar-collapse" id="navbarMenu">
-                           <ul class="navbar-nav mr-auto">
-                               <li class="nav-item">
-                                   <a class="nav-link" th:href="@{/}">Acceuil</a>
-                               </li>
-                               <li class="nav-item">
-                                   <a class="nav-link" th:href="@{/sites}">Site d'escalade</a>
-                               </li>
-                               <li class="nav-item">
-                                   <a class="nav-link" th:href="@{/topos/topos}">Topos</a>
-                               </li>
-                               <li class="nav-item">
-                                   <a sec:authorize="isAuthenticated()" class="nav-link" th:href="@{/user/panel}">Espace utilisateur</a>
-                                   <a sec:authorize="isAnonymous()" class="nav-link" th:href="@{/login}">Connexion</a>
-                               </li>
-                               <li class="nav-item">
-                                   <a sec:authorize="isAnonymous()" class="nav-link" th:href="@{/register}">Inscription</a>
-                               </li>
-                           </ul>
-                       </div>
-                   </nav>
-               </div>
-           </div>
+            <div th:replace="/fragments :: nav"> </div>
+            <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
         </div>
     </body>
 </html>

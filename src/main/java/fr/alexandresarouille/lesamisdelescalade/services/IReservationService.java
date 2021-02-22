@@ -2,6 +2,7 @@ package fr.alexandresarouille.lesamisdelescalade.services;
 
 import fr.alexandresarouille.lesamisdelescalade.entities.Reservation;
 import fr.alexandresarouille.lesamisdelescalade.entities.Topo;
+import fr.alexandresarouille.lesamisdelescalade.entities.User;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,4 +30,8 @@ public interface IReservationService {
     public void deleteReservation(Integer id) throws EntityNotExistException;
 
     public Page<Reservation> listAllByTopo(PageRequest pageRequest, Topo topo);
+
+    public Optional<Reservation> getConfirmedReservationForTopo(Topo topo);
+
+    public Optional<Reservation> getReservationByTopoAndUser(Topo topo, User user);
 }

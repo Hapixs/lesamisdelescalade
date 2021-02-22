@@ -21,22 +21,57 @@
     <link rel="stylesheet" href="style/style.css">
 
 
-    <title>Title</title>
+    <title>Topos</title>
 </head>
 
 <body>
-        <a th:href="@{/user/registerNewTopo}">Ajouter un nouveau topo</a>
-        <div th:each="t : ${topos}" th:object="${t}">
-            <p th:text="'Nom: ' + *{displayName}"></p>
-            <p th:text="'Description ' + *{description}"></p>
-            <p th:text="'Disponible: ' + (*{getAvailable()} ?  'Oui' : 'Non')"></p>
+
+<div class="container">
+    <div th:replace="/fragments :: nav"> </div>
+    <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
+    <div class="row w-auto align-content-center pb-3 pt-4">
+        <a class="col-md-4 col-12 btn btn-primary m-2" th:unless="${reservedTopo.isEmpty() && unReservedTopo.isEmpty()}" th:href="@{/user/registerNewTopo}">Ajouter un nouveau topo</a>
+        <a class="col-md-4 col-12 btn btn-primary m-2" th:unless="${unReservedTopo.isEmpty()}" href="#reservedTopos">Voir mes topos disponibles</a>
+        <a class="col-md-4 col-12 btn btn-primary m-2" th:unless="${reservedTopo.isEmpty()}" href="#unreservedTopos">Voir mes topos réservés</a>
+    </div>
+    <div class="row align-items-center text-center" th:if="${reservedTopo.isEmpty() && unReservedTopo.isEmpty()}">
+        <h3 class="text-center col-12">Aucun topo trouver !</h3>
+        <p class="col-12 text-center" style="color: darkgray">Vous pouvez ajouter un topo en cliquand <a th:href="@{/user/registerNewTopo}">ici</a></p>
+    </div>
+
+    <h3 id="unreservedTopos" th:if="${!reservedTopo.isEmpty()}">Topo réserver</h3>
+    <div class="row card w-auto m-3" th:each="t : ${reservedTopo}" th:object="${t}">
+        <div class="card-header">
+            <h4 class="card-title" th:text="*{getDisplayName()}"></h4>
+            <p class="card-subtitle text-muted" th:text="*{getRegion()}"></p>
+            <span th:if="*{getAvailable()}" class="badge badge-success">Disponible</span>
+            <span th:if="*{!getAvailable()}" class="badge badge-danger">Indisponible</span>
+        </div>
+        <div class="card-body">
+            <p class="card-text" th:text="'Poster le: ' + *{#dates.format(releaseDate,'dd/MM/YYYY')}"></p>
+            <p class="card-text text-break" th:text="*{getDescription()}"></p>
+        </div>
+        <div class="card-footer" th:unless="*{getAvailable()}">
+            <p class="card-text" th:if="*{getCurrentReservation() != null}" th:text="'Réserver par: '+*{getCurrentReservation().getUser().getEmail()}"></p>
+            <a class="card-link" th:text="'Activer la disponibilitée'" th:href="@{/topos/setavailable(id=*{id})}"></a>
+        </div>
+    </div>
+    <h3 id="reservedTopos" th:if="${!unReservedTopo.isEmpty()}">Topos disponibles</h3>
+    <div class="row card m-3" th:each="t : ${unReservedTopo}" th:object="${t}">
+        <div class="card-header">
+            <h4 class="card-title" th:text="*{getDisplayName()} ? 'null' "></h4>
+            <p  class="card-subtitle text-muted" th:text="*{getRegion()}"></p>
+            <span th:if="*{getAvailable()}" class="badge badge-success">Disponible</span>
+            <span th:if="*{!getAvailable()}" class="badge badge-danger">Indisponible</span>
+        </div>
+        <div class="card-body">
+            <p class="card-text" th:text="'Poster le: ' + *{#dates.format(releaseDate,'dd/MM/YYYY')}"></p>
+            <p class="card-text text-break" th:text="*{getDescription()}"></p>
             <div th:if="*{getAvailable()}">
-                <a th:href="@{/topos/reservations(id=*{getId()})}">Voir les resérvations:</a>
-            </div>
-            <div th:unless="*{getAvailable()}">
-                <p th:text="'Reserver par: ' + ${reservationsComplete.get(t.getId()).getEmail()}"></p>
-                <a th:text="'Activer la disponibilitée'" th:href="@{/topos/setavailable(id=*{id})}"></a>
+                <a class="btn btn-primary" th:href="@{/topos/reservations(id=*{getId()})}">Voir les resérvations:</a>
             </div>
         </div>
+    </div>
+</div>
 </body>
 </html>

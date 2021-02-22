@@ -21,13 +21,44 @@
     <link rel="stylesheet" href="style/style.css">
 
 
-    <title>Title</title>
+    <title>Espace personnel</title>
 </head>
 
 <body>
-        <div>
-            <a th:href="@{/user/registerNewSite}">Enregistrer un nouveau site</a>
-            <a th:href="@{/user/topos}">Mes topos</a>
+<div class="container">
+    <div th:replace="/fragments :: nav"> </div>
+    <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
+    <div class="row m-3">
+        <div class="card">
+            <div class="card-header text-center">Site d'escalades</div>
+            <div class="card-body">
+                <h5 class="card-title">Partager un nouveau site d'escalade</h5>
+                <p class="card-text">
+                    En cliquant sur ce boutton vous pourrez ajouter un nouveau site d'escalade qui serra afficher dans la liste des sites.
+                   <br/>Attention à ne peux poster un site déjà éxistant et à poster de réels informations.
+                </p>
+                <div class="text-center">
+                    <a th:href="@{/user/registerNewSite}" class="btn btn-primary card-link">Ajouter un site</a>
+                </div>
+            </div>
         </div>
+    </div>
+    <div class="row m-3">
+        <div class="card">
+            <div class="card-header text-center">Topos</div>
+            <div class="card-body">
+                <h5 class="card-title">Partager un topos que vous pocéder / Gérer les topos existant</h5>
+                <p class="card-text">
+                    En cliquant sur ce boutton vous pourrez ajouter un nouveau topo à la liste des topo afin de pouvoire le transmettre au utilisateur
+                    ayant fait une réservation.
+                    <br/>Vous pourrez aussi gérer vos topos déjà partager.
+                </p>
+                <div class="text-center">
+                    <a th:href="@{/user/topos}" class="btn btn-primary card-link">Mes topos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

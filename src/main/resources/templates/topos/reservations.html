@@ -25,6 +25,26 @@
 </head>
 
 <body>
+    <div class="container">
+        <div th:replace="/fragments :: nav"> </div>
+        <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
+        <div class="row">
+            <h2>Réservations de topo</h2>
+            <p>En acceptant une réservation le topo ce mettra automatiquement indisponible et l'email de l'utilisateur choisis sera afficher dans la liste de vos topos</p>
+            <hr/>
+        </div>
+        <div th:if="${reservations.isEmpty()}">
+            <h2>Aucune réservation trouvée...</h2>
+        </div>
+        <div class="row card m-3" th:each="reservation : ${reservations}" th:object="${reservation}">
+            <div class="card-header">
+                <h4 class="card-title" th:text="*{'Réservation de '+ getUser().getUsername()}"></h4>
+            </div>
+            <div class="card-body">
+                <a class="btn btn-primary" th:href="@{/topos/confirmReservation(id=*{getId()})}">Confirmer la réservation</a>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

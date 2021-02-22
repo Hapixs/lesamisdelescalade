@@ -21,7 +21,7 @@ public class Reservation {
 
         this.user = user;
         this.topo = topo;
-
+        isAccepted = false;
     }
 
     /**
@@ -49,12 +49,13 @@ public class Reservation {
 
 
     // VARIABLES
-    @OneToOne @JoinColumn(name = "user_id")
+    @ManyToOne @JoinColumn(name = "user_id")
     private User user; // UTILISATEUR A L ORIGINE DE LA RESERVATION
 
-    @OneToOne @JoinColumn(name = "topo_id")
+    @ManyToOne @JoinColumn(name = "topo_id")
     private Topo topo; // TOPO A RESERVER
 
+    private boolean isAccepted;
     //GETTERS & SETTERS
 
     public User getUser() {
@@ -71,5 +72,13 @@ public class Reservation {
 
     public void setTopo(Topo topo) {
         this.topo = topo;
+    }
+
+    public boolean isAccepted() {
+        return isAccepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        isAccepted = accepted;
     }
 }

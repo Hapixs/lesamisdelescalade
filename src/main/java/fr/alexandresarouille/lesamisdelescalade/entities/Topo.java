@@ -60,6 +60,7 @@ public class Topo {
     private User user; // UTILISATEUR DETENANT LE TOPO
 
     private String displayName; // NOM DU TOPO
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String description; // DESCRIPTION DU TOPO
 
     private Region region; // Region du topo
@@ -68,7 +69,8 @@ public class Topo {
 
     private Boolean available; // DISPONIBILITE DU TOPO
 
-
+    @OneToOne
+    private Reservation currentReservation;
     //GETTERS & SETTERS
 
     public User getUser() {
@@ -117,5 +119,13 @@ public class Topo {
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    public Reservation getCurrentReservation() {
+        return currentReservation;
+    }
+
+    public void setCurrentReservation(Reservation currentReservation) {
+        this.currentReservation = currentReservation;
     }
 }

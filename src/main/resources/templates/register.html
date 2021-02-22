@@ -21,18 +21,45 @@
     <link rel="stylesheet" href="style/style.css">
 
 
-    <title>Title</title>
+    <title>Inscription</title>
 </head>
 
 <body>
-    <div>
-        <form th:action="@{/register}" th:method="POST" th:object="${newUser}">
-            <input type="text" th:field="*{username}" />
-            <input type="text" th:field="*{email}" />
-            <input type="password" th:field="*{password}">
+<div class="container">
+    <div th:replace="/fragments :: nav"> </div>
+    <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
 
-            <input type="submit" th:value="'S \'inscrie'">
-        </form>
-    </div>
+    <h2 class="pt-4">Inscription</h2>
+
+    <form class="input-group" th:action="@{/register}" th:method="POST" th:object="${newUser}">
+        <div class="row align-items-center p-3 w-100">
+            <div class="col-auto">
+                <input class="form-control" type="text" th:field="*{username}" aria-label="Username" placeholder="Nom d'utilisateur"/>
+            </div>
+        </div>
+
+        <div class="row align-items-center p-3  w-100">
+            <div class="col-auto">
+                <input class="form-control" type="text" th:field="*{email}" aria-label="Email" placeholder="Adresse mail"/>
+            </div>
+        </div>
+
+        <div class="row align-items-center p-3  w-100">
+            <div class="col-auto">
+                <input class="form-control" type="password" th:field="*{password}" aria-label="Password" placeholder="Mot de passe"/>
+            </div>
+        </div>
+
+        <div class="row p-2 w-100">
+            <span class="text-mutedt">Déjà un compte ? <a th:href="@{/login}">Connexion</a></span>
+        </div>
+
+        <div class="row align-items-center p-3  w-100">
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">S'inscrire</button>
+            </div>
+        </div>
+    </form>
+</div>
 </body>
 </html>
