@@ -88,7 +88,7 @@ public class TopoController {
                 redirectAttributes.addAttribute("error", "Vous avez déjà fait une réservation pour ce topo.");
                 return "redirect:/topos/topos";
             }
-            redirectAttributes.addAttribute("error", "Votre réservation à bien été enregistrée.");
+            redirectAttributes.addAttribute("succes", "Votre réservation à bien été enregistrée.");
             Reservation reservation = new Reservation(user, topo);
 
             reservationService.createReservation(reservation);

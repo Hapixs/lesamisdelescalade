@@ -21,7 +21,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/style/style.css}">
 
 
-    <title>Title</title>
+    <title th:text="'Site: '+${site.getDisplayName()}"></title>
 </head>
 
 <body>
@@ -53,8 +53,9 @@
         <div class="row">
             <h2 class="col mt-4">Commentaires</h2>
         </div>
+        <h4 sec:authorize="isAnonymous()">Connecter vous <a th:href="@{/login}">ici</a> pour pouvoir laisser des commentaires</h4>
         <div th:if="${coms.isEmpty()}">
-            <h4>Il n'y a encore aucun commentaire, soyez le premier le faire</h4>
+            <h4 sec:authorize="isAuthenticated()">Il n'y a encore aucun commentaire, soyez le premier à en laisser un.</h4>
         </div>
         <div class="row card m-3" th:each="commentary : ${coms}" th:object="${commentary}">
             <div class="card-body">

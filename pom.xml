@@ -10,14 +10,14 @@
     </parent>
     <groupId>fr.alexandresarouille</groupId>
     <artifactId>lesamisdelescalade</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1</version>
     <name>lesamisdelescalade</name>
     <description>Site d&apos;escalade communautaire pour &apos;Les amis de l&apos;escalade&apos;</description>
 
     <properties>
         <java.version>1.8</java.version>
     </properties>
-
+    <packaging>war</packaging>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -84,12 +84,17 @@
         </dependency>
     </dependencies>
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <finalName>${project.artifactId}</finalName>
+
     </build>
 
 </project>

@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -36,17 +37,21 @@ public class LesamisdelescaladeApplication extends SpringBootServletInitializer 
     public static void main(String[] args) {
         SpringApplication.run(LesamisdelescaladeApplication.class, args);
     }
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(LesamisdelescaladeApplication.class);
+    }
 
     @Override
     public void run(String... args) throws Exception {
         // VARIABLE à MODIFIER EN FONCTION DU NOMBRE DE JEUX DE DONNEE GENERER ALEATOIREMENT VOULUT
         // A METTRE SUR 0 POUR N AVOIR AUCUN JEUX DE DONNE GENERER
         boolean adminAccount = true; // username = admin ; password = admin
-        int numberSiteExampleToCreate = 500;
-        int numberUserToCreate = 100;
-        int numberCommentaryToCreate = 750;
-        int numberToposToCreate = 75;
-        int numberReservationsToCreate = 200;
+        int numberSiteExampleToCreate = 0;
+        int numberUserToCreate = 0;
+        int numberCommentaryToCreate = 0;
+        int numberToposToCreate = 0;
+        int numberReservationsToCreate = 0;
         // ---------------------------------------------------------------------------------
 
         System.out.println("Génération du jeux de données....");
