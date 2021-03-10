@@ -8,6 +8,7 @@ import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistExceptio
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,6 +82,11 @@ public class ReservationService implements IReservationService {
     @Override
     public Optional<Reservation> getReservationByTopoAndUser(Topo topo, User user) {
         return reservationRepository.findByTopoAndUser(topo, user);
+    }
+
+    @Override
+    public Page<Reservation> listAllByUser(Pageable pageable, User user) {
+        return reservationRepository.findAllByUser(pageable, user);
     }
 
 

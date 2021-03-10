@@ -6,6 +6,7 @@ import fr.alexandresarouille.lesamisdelescalade.entities.enums.Difficulty;
 import fr.alexandresarouille.lesamisdelescalade.entities.enums.Region;
 import fr.alexandresarouille.lesamisdelescalade.entities.enums.Role;
 import fr.alexandresarouille.lesamisdelescalade.services.ClimbingSiteService;
+import fr.alexandresarouille.lesamisdelescalade.services.IUserService;
 import fr.alexandresarouille.lesamisdelescalade.services.UserService;
 import org.aspectj.apache.bcel.classfile.BootstrapMethods;
 import org.hibernate.jpa.boot.spi.Bootstrap;
@@ -24,32 +25,27 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
         auth
-                .inMemoryAuthentication()
-                .passwordEncoder(bCryptPasswordEncoder())
-                .and()
-                .userDetailsService(userService);
+                .userDetailsService(userService)
+                .passwordEncoder(bCryptPasswordEncoder());
 
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf()
+        http
 
-                .disable()
                 .formLogin()
                 .defaultSuccessUrl("/")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .antMatchers("/user/**").hasAuthority(Role.USER.name())
-                .antMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
-                .anyRequest().authenticated();
+                .antMatchers("/**/admin/**").hasAuthority(Role.ADMIN.name())
+                .antMatchers("/**/users/**").authenticated();
 
     }
 

@@ -26,4 +26,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     Optional<Reservation> findByTopoAndAccepted(@Param("topo") Topo topo, @Param("accepted") Boolean accepted);
 
     Optional<Reservation> findByTopoAndUser(Topo topo, User user);
+
+    Page<Reservation> findAllByUser(Pageable pageable, User user);
 }

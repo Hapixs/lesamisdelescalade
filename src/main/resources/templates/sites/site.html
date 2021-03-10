@@ -33,10 +33,12 @@
             <div class="card-header">
                <h2 class="card-title" th:text="${site.getDisplayName()}"></h2>
                <h5>
-                   <span th:if="${site.getOfficial()}" class="badge bg-success">Partenaire</span>
-                   <span th:unless="${site.getOfficial()}" class="badge bg-warning">Non partenaire</span>
+                   <span th:if="${site.getOfficial()}" class="badge bg-success">Officel</span>
+                   <span th:unless="${site.getOfficial()}" class="badge bg-warning">Non Officiel</span>
                </h5>
-                <a class="text-muted" sec:authorize="hasAuthority('ADMIN')" th:href="@{/sites/tagSite(siteid=(${site.getId()}))}" th:text="${site.getOfficial()} ? 'Désofficialiser' : 'Officialiser'"></a>
+                <form sec:authorize="hasAuthority('ADMIN')" th:action="@{/sites/site(id=(${site.getId()}))}" th:method="PUT">
+                    <input class="btn btn-primary" type="submit" th:value="${site.getOfficial()} ? 'Désofficialiser' : 'Officialiser'">
+                </form>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -63,14 +65,14 @@
                 <p th:text="*{getContent()}"></p>
             </div>
             <div class="card-subtitle text-center" sec:authorize="hasAuthority('ADMIN')">
-                <a class="btn btn-primary" th:href="@{/sites/editCommentary(comid=*{getId()})}">Editer</a>
-                <a class="btn btn-primary" th:href="@{/sites/removeCommentary(comid=*{getId()})}">Supprimer</a>
+                <a class="btn btn-primary" th:href="@{/commentaries/admin/edit(comid=*{getId()},siteid=${site.getId()})}" th:method="GET">Editer</a>
+                <a class="btn btn-primary" th:href="@{/commentaries/admin/remove(comid=*{getId()})}" methods="POST">Supprimer</a>
             </div>
         </div>
         <div class="row mt-4">
             <div sec:authorize="isAuthenticated()">
                 <h3 class="col">Ajouter un commentaire</h3>
-                <form th:action="@{/sites/site(id=${site.getId()})}" th:method="POST" th:object="${postCommentary}">
+                <form th:action="@{/commentaries(id=${site.getId()})}" th:method="POST" th:object="${postCommentary}">
                     <textarea class="col form-control" placeholder="Commentaire..." type="text" th:field="*{content}"></textarea>
                     <input class="col btn btn-primary" type="submit" th:value="Commenter">
                 </form>

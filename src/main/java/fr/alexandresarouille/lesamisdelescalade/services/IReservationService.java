@@ -6,6 +6,7 @@ import fr.alexandresarouille.lesamisdelescalade.entities.User;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -34,4 +35,6 @@ public interface IReservationService {
     public Optional<Reservation> getConfirmedReservationForTopo(Topo topo);
 
     public Optional<Reservation> getReservationByTopoAndUser(Topo topo, User user);
+
+    public Page<Reservation> listAllByUser(Pageable pageable, User user);
 }

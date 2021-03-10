@@ -30,7 +30,7 @@
 
     <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
 
-    <form class="row m-3" novalidate th:action="@{/user/registerNewSite}" th:method="POST" th:object="${newSite}">
+    <form class="row m-3" novalidate th:action="@{/sites/users/newsite}" th:method="POST" th:object="${newSite}">
         <div class="col-sm-12 col-md-4">
             <label for="inputSiteDisplayName" class="col-form-label">Nom du site</label>
             <input type="text" class="form-control" id="inputSiteDisplayName" th:field="*{displayName}" th:value="*{displayName}" required>

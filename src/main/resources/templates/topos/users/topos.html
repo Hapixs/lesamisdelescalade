@@ -30,7 +30,7 @@
     <div th:replace="/fragments :: nav"> </div>
     <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
     <div class="row w-auto align-content-center pb-3 pt-4">
-        <a class="col-md-4 col-12 btn btn-primary m-2" th:unless="${reservedTopo.isEmpty() && unReservedTopo.isEmpty()}" th:href="@{/user/registerNewTopo}">Ajouter un nouveau topo</a>
+        <a class="col-md-4 col-12 btn btn-primary m-2" th:unless="${reservedTopo.isEmpty() && unReservedTopo.isEmpty()}" th:href="@{/topos/users/newtopo}">Ajouter un nouveau topo</a>
         <a class="col-md-4 col-12 btn btn-primary m-2" th:unless="${unReservedTopo.isEmpty()}" href="#reservedTopos">Voir mes topos disponibles</a>
         <a class="col-md-4 col-12 btn btn-primary m-2" th:unless="${reservedTopo.isEmpty()}" href="#unreservedTopos">Voir mes topos réservés</a>
     </div>
@@ -53,7 +53,7 @@
         </div>
         <div class="card-footer" th:unless="*{getAvailable()}">
             <p class="card-text" th:if="*{getCurrentReservation() != null}" th:text="'Réserver par: '+*{getCurrentReservation().getUser().getEmail()}"></p>
-            <a class="card-link" th:text="'Activer la disponibilitée'" th:href="@{/topos/setavailable(id=*{id})}"></a>
+            <a class="card-link" th:text="'Activer la disponibilitée'" th:href="@{/topos/users/available(id=*{id})}"></a>
         </div>
     </div>
     <h3 id="unreservedTopos" th:if="${!unReservedTopo.isEmpty()}">Topos disponibles</h3>
@@ -68,7 +68,7 @@
             <p class="card-text" th:text="'Poster le: ' + *{#dates.format(releaseDate,'dd/MM/YYYY')}"></p>
             <p class="card-text text-break" th:text="*{getDescription()}"></p>
             <div th:if="*{getAvailable()}">
-                <a class="btn btn-primary" th:href="@{/topos/reservations(id=*{getId()})}">Voir les resérvations:</a>
+                <a class="btn btn-primary" th:href="@{/reservations/topos/reservations(id=*{getId()})}">Voir les resérvations:</a>
             </div>
         </div>
     </div>

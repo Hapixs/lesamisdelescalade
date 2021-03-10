@@ -21,25 +21,10 @@
     <link rel="stylesheet" href="style/style.css">
 
 
-    <title>Commentaire</title>
+    <title>Title</title>
 </head>
 
 <body>
 
-<div class="container">
-    <div th:replace="/fragments :: nav"> </div>
-    <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
-    <div class="row card m-3" th:object="${commentary}">
-        <div class="card-body">
-            <p th:text="'Ecrit par: ' + *{getUser().getUsername()}"></p>
-            <p th:text="*{getContent()}"></p>
-            <form class="pt-3" th:action="@{/sites/editCommentary(comid=${commentary.getId()})}" th:method="POST" th:object="${commentary}">
-                <input class="form-control" type="text" th:field="*{content}" th:value="*{getContent()}"/>
-                <input class="btn-primary btn" type="submit" th:value="Editer">
-                <a class="btn btn-primary" th:href="@{/sites/removeCommentary(comid=*{getId()})}">Supprimer</a>
-            </form>
-        </div>
-    </div>
-</div>
 </body>
 </html>

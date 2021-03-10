@@ -27,7 +27,7 @@ import java.util.Optional;
  **/
 @Service
 @Transactional
-public class UserService implements IUserService, UserDetailsService {
+public class UserService implements IUserService {
 
     @Autowired
     private UserRepository userRepository;

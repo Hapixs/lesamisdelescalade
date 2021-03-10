@@ -30,7 +30,7 @@
     <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
     <h2 class="pt-4">Nouveau topo</h2>
 
-    <form class="input-group" th:action="@{/user/registerNewTopo}" th:method="POST" th:object="${topo}">
+    <form class="input-group" th:action="@{/topos/users/newtopo}" th:method="POST" th:object="${topo}">
         <div class="row align-items-center p-3 w-100">
             <div class="col-auto">
                 <input class="form-control" type="text" th:field="*{displayName}" aria-label="DisplayName" placeholder="Nom"/>

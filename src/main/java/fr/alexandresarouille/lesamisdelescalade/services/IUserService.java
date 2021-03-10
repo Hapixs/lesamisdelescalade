@@ -3,6 +3,7 @@ package fr.alexandresarouille.lesamisdelescalade.services;
 import fr.alexandresarouille.lesamisdelescalade.entities.User;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityAlreadyExistException;
 import fr.alexandresarouille.lesamisdelescalade.exception.EntityNotExistException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
  * @author Alexandre Sarouille
  * @since 14/01/2021
  **/
-public interface IUserService {
+public interface IUserService extends UserDetailsService {
 
     public Optional<User> findById(Integer id);
 

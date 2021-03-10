@@ -21,38 +21,30 @@
     <link rel="stylesheet" href="style/style.css">
 
 
-    <title>Topos d'escalade</title>
+    <title>Réservations du topo</title>
 </head>
 
 <body>
 <div class="container">
     <div th:replace="/fragments :: nav"> </div>
     <div th:replace="/fragments :: notif(${succes}, ${error})"></div>
-
-    <div th:if="${topos.isEmpty()}">
-        <h2>Aucun topo trouver...</h2>
+    <div class="row">
+        <h2>Réservations de topo</h2>
+        <p>En acceptant une réservation le topo ce mettra automatiquement indisponible et l'email de l'utilisateur choisis sera afficher dans la liste de vos topos</p>
+        <hr/>
     </div>
-    <nav th:unless="${topos.isEmpty()}" aria-label="pagination">
-        <ul class="pagination">
-            <li class="page-item"><a class="page-link" th:href="@{/topos/topos(page=${topos.previousOrFirstPageable().getPageNumber()})}">Précédent<<</a></li>
-            <li class="page-item"><a class="page-link" th:href="@{/topos/topos(page=${topos.nextOrLastPageable().getPageNumber()})}">Suivant</a></li>
-        </ul>
-    </nav>
-    <div class="row card m-3" th:each="t : ${topos}" th:object="${t}">
+    <div th:if="${reservations.isEmpty()}">
+        <h2>Aucune réservation trouvée...</h2>
+    </div>
+    <div class="row card m-3" th:each="reservation : ${reservations}" th:object="${reservation}">
         <div class="card-header">
-            <h4 class="card-title" th:text="*{getDisplayName()}"></h4>
-            <p class="card-subtitle text-muted" th:text="*{getRegion()}"></p>
-            <span th:if="*{getAvailable()}" class="badge badge-success">Disponible</span>
-            <span th:if="*{!getAvailable()}" class="badge badge-danger">Indisponible</span>
+            <h4 class="card-title" th:text="*{'Réservation de '+ getUser().getUsername()}"></h4>
         </div>
         <div class="card-body">
-            <p class="card-text" th:text="'Poster le: ' + *{#dates.format(releaseDate,'dd/MM/YYYY')}"></p>
-            <p class="card-text text-break" th:text="*{getDescription()}"></p>
-            <form sec:authorize="isAuthenticated()" th:action="@{/reservations/reservation(topoId=*{id})}" th:method="POST">
-                <input class="btn btn-primary" type="submit" th:value="'Demande de Réservation'">
-            </form>
+            <a class="btn btn-primary" th:href="@{/topos/topos/reservations(id=*{getId()})}" th:method="POST">Confirmer la réservation</a>
         </div>
     </div>
 </div>
+
 </body>
 </html>
