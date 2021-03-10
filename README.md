@@ -1,11 +1,11 @@
 # Les Amis De L'escalade
 Site communautaire regroupant les différent site d'escalade de France et des topos sur chaqu'une des régions.
 ***
-###Prérequis
+### Prérequis ###
 + java version 1.8.0
 + maven 2
 + une base de donnée MySQL
-###Configuration
+### Configuration ###
 **Utiliser la configuration par défaut de l'application:**
 * host: localhost
 * port: 3306
@@ -19,7 +19,7 @@ Site communautaire regroupant les différent site d'escalade de France et des to
    * `spring.datasource.username`
    * `spring.datasource.password`
 2. Rebuild l'application avec maven et la commande: `mvn clean package`
-###Déploiement de l'application ###
+### Déploiement de l'application ###
 Afin de déployer l'application vous allez devoir demander à maven de build l'application afin d'en générer le .war utiliser.
 
 En ce placent a la racine du projet utiliser la commande: `mvn clean package`
@@ -43,7 +43,7 @@ Our alors utiliser la commande `java -jar {chemin_de_l'archive}/lesamisdelescala
 
 Vous pouvez aussi créer un fichier shell (.sh) à n'importe quel endroit contenant la commande ci-dessus pointant vers l'archive war.
 
-###Utilisation
+### Utilisation ###
 Une foie l'application déployé vous pour y acceder localement depuis le lien: http://localhost:8080/
 
 Voilà l'application devrais être en place et prête à être utiliser.
